@@ -338,6 +338,49 @@ class Parser(object):
         },
     ]
 
+    RETURN_ADDENDA_RECORD_DEF = [
+        {
+            'field': 'record_type_code',
+            'pos': 0,
+            'len': 1,
+        },
+        {
+            'field': 'addenda_type_code',
+            'pos': 1,
+            'len': 2,
+        },
+        {
+            'field': 'return_reason_code',
+            'pos': 3,
+            'len': 3,
+        },
+        {
+            'field': 'orig_trace_num',
+            'pos': 6,
+            'len': 15,
+        },
+        {
+            'field': 'date_of_death',
+            'pos': 21,
+            'len': 6,
+        },
+        {
+            'field': 'orig_rdfi_id',
+            'pos': 27,
+            'len': 8,
+        },
+        {
+            'field': 'addenda_info',
+            'pos': 35,
+            'len': 44,
+        },
+        {
+            'field': 'trace_num',
+            'pos': 79,
+            'len': 15,
+        },
+    ]
+
     record_type_codes = {
         '1': 'file_header',
         '9': 'file_control',
@@ -345,6 +388,15 @@ class Parser(object):
         '8': 'batch_control',
         '6': 'entry_detail',
         '7': 'addenda_record',
+    }
+
+
+    REGULAR_ADDENDA = '05'
+    RETURN_ADDENDA = '99'
+
+    addenda_type_codes = {
+        '05': 'regular_addenda',
+        '99': 'return_addenda',
     }
 
     def __init__(self, ach_file):
@@ -367,6 +419,7 @@ class Parser(object):
         batch_header = [f['field'] for f in self.BATCH_HEADER_DEF]
         entry_header = [f['field'] for f in self.ENTRY_DETAIL_DEF]
         addenda_header = [f['field'] for f in self.ADDENDA_RECORD_DEF]
+        return_addenda_header = [f['field'] for f in self.RETURN_ADDENDA_RECORD_DEF]
         batch_control = [f['field'] for f in self.BATCH_CONTROL_DEF]
         file_control = [f['field'] for f in self.FILE_CONTROL_DEF]
 
@@ -501,10 +554,14 @@ class Parser(object):
                             'addenda': []
                         })
                     if self.ach_lines[line_num][0] == self.ADDENDA_RECORD:
+                        addenda_def = 'ADDENDA_RECORD_DEF'
+                        if self.ach_lines[line_num][1:3] == self.RETURN_ADDENDA:
+                            addenda_def = 'RETURN_ADDENDA_RECORD_DEF'
+
                         self.ach_data['batches'][cur_batch]['entries'][
                             cur_entry
                         ]['addenda'].append(
                             self.__parse_line(
-                                self.ach_lines[line_num], 'ADDENDA_RECORD_DEF'
+                                self.ach_lines[line_num], addenda_def
                             )
                         )

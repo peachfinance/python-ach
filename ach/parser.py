@@ -412,63 +412,63 @@ class Parser(object):
     def as_dict(self):
         return self.ach_data
 
-    def as_csv(self):
-        data = self.as_dict()
-        buffer = StringIO()
-        file_header = [f['field'] for f in self.FILE_HEADER_DEF]
-        batch_header = [f['field'] for f in self.BATCH_HEADER_DEF]
-        entry_header = [f['field'] for f in self.ENTRY_DETAIL_DEF]
-        addenda_header = [f['field'] for f in self.ADDENDA_RECORD_DEF]
-        return_addenda_header = [f['field'] for f in self.RETURN_ADDENDA_RECORD_DEF]
-        batch_control = [f['field'] for f in self.BATCH_CONTROL_DEF]
-        file_control = [f['field'] for f in self.FILE_CONTROL_DEF]
-
-        writer = csv.DictWriter(buffer, fieldnames=file_header)
-        writer.writeheader()
-        writer.writerow(data['file_header'])
-        writer.writerow({})
-        for batch in data['batches']:
-            writer.fieldnames = batch_header
-            writer.writeheader()
-            writer.writerow(batch['batch_header'])
-            max_addenda = 0
-            for entry in batch['entries']:
-                max_addenda = max(max_addenda, len(entry['addenda']))
-            writer.writerow({})
-            if max_addenda <= 1:
-                writer.fieldnames = entry_header + [
-                    'a_{}'.format(h) for h in addenda_header
-                ]
-            else:
-                writer.fieldnames = entry_header + [
-                    'a_{}_{}'.format(h, i) for h in addenda_header
-                    for i in range(max_addenda)
-                ]
-            writer.writeheader()
-            for entry in batch['entries']:
-                detail = dict(entry['entry_detail'])
-                if entry['addenda']:
-                    if len(entry['addenda']) == 1:
-                        detail.update({
-                            'a_{}'.format(k): v
-                            for k, v in entry['addenda'][0].items()
-                        })
-                    else:
-                        for i, addenda in enumerate(entry['addenda']):
-                            detail.update({
-                                'a_{}_{}'.format(k, i): v
-                                for k, v in addenda.items()
-                            })
-                writer.writerow(detail)
-            writer.writerow({})
-            writer.fieldnames = batch_control
-            writer.writeheader()
-            writer.writerow(batch['batch_control'])
-            writer.writerow({})
-        writer.fieldnames = file_control
-        writer.writeheader()
-        writer.writerow(data['file_control'])
-        return buffer.getvalue()
+    # def as_csv(self):
+    #     data = self.as_dict()
+    #     buffer = StringIO()
+    #     file_header = [f['field'] for f in self.FILE_HEADER_DEF]
+    #     batch_header = [f['field'] for f in self.BATCH_HEADER_DEF]
+    #     entry_header = [f['field'] for f in self.ENTRY_DETAIL_DEF]
+    #     addenda_header = [f['field'] for f in self.ADDENDA_RECORD_DEF]
+    #     return_addenda_header = [f['field'] for f in self.RETURN_ADDENDA_RECORD_DEF]
+    #     batch_control = [f['field'] for f in self.BATCH_CONTROL_DEF]
+    #     file_control = [f['field'] for f in self.FILE_CONTROL_DEF]
+    #
+    #     writer = csv.DictWriter(buffer, fieldnames=file_header)
+    #     writer.writeheader()
+    #     writer.writerow(data['file_header'])
+    #     writer.writerow({})
+    #     for batch in data['batches']:
+    #         writer.fieldnames = batch_header
+    #         writer.writeheader()
+    #         writer.writerow(batch['batch_header'])
+    #         max_addenda = 0
+    #         for entry in batch['entries']:
+    #             max_addenda = max(max_addenda, len(entry['addenda']))
+    #         writer.writerow({})
+    #         if max_addenda <= 1:
+    #             writer.fieldnames = entry_header + [
+    #                 'a_{}'.format(h) for h in addenda_header
+    #             ]
+    #         else:
+    #             writer.fieldnames = entry_header + [
+    #                 'a_{}_{}'.format(h, i) for h in addenda_header
+    #                 for i in range(max_addenda)
+    #             ]
+    #         writer.writeheader()
+    #         for entry in batch['entries']:
+    #             detail = dict(entry['entry_detail'])
+    #             if entry['addenda']:
+    #                 if len(entry['addenda']) == 1:
+    #                     detail.update({
+    #                         'a_{}'.format(k): v
+    #                         for k, v in entry['addenda'][0].items()
+    #                     })
+    #                 else:
+    #                     for i, addenda in enumerate(entry['addenda']):
+    #                         detail.update({
+    #                             'a_{}_{}'.format(k, i): v
+    #                             for k, v in addenda.items()
+    #                         })
+    #             writer.writerow(detail)
+    #         writer.writerow({})
+    #         writer.fieldnames = batch_control
+    #         writer.writeheader()
+    #         writer.writerow(batch['batch_control'])
+    #         writer.writerow({})
+    #     writer.fieldnames = file_control
+    #     writer.writeheader()
+    #     writer.writerow(data['file_control'])
+    #     return buffer.getvalue()
 
     def __parse_file(self):
         self.__parse_file_header()

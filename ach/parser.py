@@ -381,6 +381,55 @@ class Parser(object):
         },
     ]
 
+    NOTIFICATION_OF_CHANGE_ADDENDA_RECORD_DEF = [
+        {
+            'field': 'record_type_code',
+            'pos': 0,
+            'len': 1,
+        },
+        {
+            'field': 'addenda_type_code',
+            'pos': 1,
+            'len': 2,
+        },
+        {
+            'field': 'change_code',
+            'pos': 3,
+            'len': 3,
+        },
+        {
+            'field': 'orig_trace_num',
+            'pos': 6,
+            'len': 15,
+        },
+        {
+            'field': 'reserved',
+            'pos': 21,
+            'len': 6,
+        },
+        {
+            'field': 'orig_rdfi_id',
+            'pos': 27,
+            'len': 8,
+        },
+        {
+            'field': 'corrected_data',
+            'pos': 35,
+            'len': 29,
+        },
+        {
+            'field': 'reserved',
+            'pos': 64,
+            'len': 15,
+        },
+        {
+            'field': 'trace_num',
+            'pos': 79,
+            'len': 15,
+        },
+    ]
+
+
     record_type_codes = {
         '1': 'file_header',
         '9': 'file_control',
@@ -393,10 +442,12 @@ class Parser(object):
 
     REGULAR_ADDENDA = '05'
     RETURN_ADDENDA = '99'
+    NOTIFICATION_OF_CHANGE_ADDENDA = '98'
 
     addenda_type_codes = {
         '05': 'regular_addenda',
         '99': 'return_addenda',
+        '98': 'notification_of_change_addenda',
     }
 
     def __init__(self, ach_file):
@@ -557,6 +608,8 @@ class Parser(object):
                         addenda_def = 'ADDENDA_RECORD_DEF'
                         if self.ach_lines[line_num][1:3] == self.RETURN_ADDENDA:
                             addenda_def = 'RETURN_ADDENDA_RECORD_DEF'
+                        if self.ach_lines[line_num][1:3] == self.NOTIFICATION_OF_CHANGE_ADDENDA:
+                            addenda_def = 'NOTIFICATION_OF_CHANGE_ADDENDA_RECORD_DEF'
 
                         self.ach_data['batches'][cur_batch]['entries'][
                             cur_entry

@@ -484,7 +484,7 @@ class EntryDetail(Ach):
                       'ind_card_acct_num', 'card_tr_typ_code_shr',
                       'add_rec_ind', 'trace_num']
 
-    alpha_numeric_fields = ['dfi_acnt_num', 'chk_serial_num', 'ind_name',
+    alpha_numeric_fields = ['dfi_acnt_num', 'chk_serial_num', 'ind_id', 'ind_name',
                             'disc_data', 'id_number', 'recv_cmpy_name',
                             'terminal_city', 'terminal_state', 'reserved',
                             'card_tr_typ_code_pos', 'pmt_type_code']
@@ -523,7 +523,7 @@ class EntryDetail(Ach):
                  card_tr_typ_code_pos='', trace_num='', dfi_acnt_num='',
                  ind_name='', disc_data='', id_number='', recv_cmpy_name='',
                  chk_serial_num='', terminal_city='', terminal_state='',
-                 pmt_type_code='', add_rec_ind=''):
+                 pmt_type_code='', add_rec_ind='', ind_id=''):
         """
         Initialize and validate the values in Entry Detail record
         """

@@ -310,7 +310,7 @@ class Parser(object):
         },
     ]
 
-        NOTIFICATION_OF_CHANGE_ADDENDA_RECORD_DEF = [
+    NOTIFICATION_OF_CHANGE_ADDENDA_RECORD_DEF = [
         {
             'field': 'record_type_code',
             'pos': 0,
